@@ -1,13 +1,28 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="pt-BR">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Análise de Vendas</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="app">
+      <h1>Análise de Vendas Supermercado</h1>
+
+      <label for="storeSelect">Selecione a Loja:</label>
+      <select id="storeSelect" v-model="selectedStore" @change="updateChart">
+        <option value="-1">Todas as Lojas</option>
+        <option v-for="(store, index) in stores" :value="index">
+          {{ store }}
+        </option>
+      </select>
+
+      <canvas id="salesChart"></canvas>
+    </div>
+
+    <script src="app.js"></script>
   </body>
 </html>
