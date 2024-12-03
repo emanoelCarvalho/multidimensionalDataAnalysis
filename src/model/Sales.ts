@@ -1,3 +1,5 @@
+//model vendas
+
 import { IOperation } from "./IOperation";
 
 class Sales implements IOperation  {
