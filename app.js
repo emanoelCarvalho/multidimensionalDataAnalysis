@@ -6,7 +6,7 @@ createApp({
       products: ["Arroz", "Feijão", "Macarrão"],
       stores: ["Loja A", "Loja B", "Loja C"],
       sales: [
-        [10000, 200, 150],
+        [10, 200, 150],
         [80, 120, 130], 
         [90, 150, 170],
       ],
