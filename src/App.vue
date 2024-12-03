@@ -4,7 +4,8 @@
     <aside class="sidebar">
       <nav>
         <div class="logo">
-          <img src="https://th.bing.com/th/id/OIP.c79wLt-XSLf2-nkYfeMWYwHaD3?rs=1&pid=ImgDetMain" alt="Logomarca O Boticário" />
+          <img src="https://th.bing.com/th/id/OIP.c79wLt-XSLf2-nkYfeMWYwHaD3?rs=1&pid=ImgDetMain"
+            alt="Logomarca O Boticário" />
         </div>
 
         <!-- Botões com Opções -->
@@ -19,11 +20,13 @@
           </div>
 
           <div>
-            <button class="btn-month-filter" @click="toggleOptions('month')">Filtrar Vendas por Mês</button>
-            <div v-if="showMonthOptions" class="options">
-              <select v-model="selectedMonthIndex">
-                <option disabled value="">Selecione um mês</option>
-                <option v-for="(month, index) in months.values" :key="index" :value="index">{{ month }}</option>
+            <button class="btn-product-filter" @click="toggleOptions('product')">Filtrar Vendas por Produto</button>
+            <div v-if="showProductOptions" class="options">
+              <select v-model="selectedProductIndex">
+                <option disabled value="">Selecione um produto</option>
+                <option v-for="(product, index) in products.values" :key="index" :value="index">
+                  Produto {{ index + 1 }}
+                </option>
               </select>
             </div>
           </div>
@@ -60,14 +63,15 @@ export default {
     return {
       // Opções de filtro
       showGraphOptions: false,
-      showMonthOptions: false,
+      showProductOptions: false,
       showBranchOptions: false,
-      selectedMonthIndex: null,
-      selectedBranchIndex: 0,
+      selectedProductIndex: 0, // 0 para "Todos os Produtos"
+      selectedBranchIndex: 0, // 0 para "Todas as Filiais"
 
       // Modelos
       months: new Dimension("Meses", 12),
       branches: new Dimension("Filiais", 3),
+      products: new Dimension("Produtos", 5),
       salesData: new Sales(12, 3, 5), // Exemplo: 12 meses, 3 filiais, 5 produtos
 
       // Configuração do gráfico
@@ -91,7 +95,8 @@ export default {
       "Novembro",
       "Dezembro",
     ];
-    this.branches.values = ["Filial 1", "Filial 2", "Filial 3"];
+    this.branches.values = ["Todas as Filiais", "Filial 1", "Filial 2", "Filial 3"];
+    this.products.values = ["Todos os Produtos", "Produto A", "Produto B", "Produto C", "Produto D", "Produto E"];
 
     // Simular vendas para teste
     for (let month = 0; month < 12; month++) {
@@ -126,7 +131,7 @@ export default {
           labels: this.months.values,
           datasets: [
             {
-              label: `Vendas - ${this.branches.values[this.selectedBranchIndex]}`,
+              label: this.getChartLabel(),
               data,
               borderColor: "rgba(54, 162, 235, 1)",
               backgroundColor: "rgba(54, 162, 235, 0.2)",
@@ -136,28 +141,35 @@ export default {
         },
       });
     },
+    getChartLabel() {
+      const branch = this.selectedBranchIndex === 0 ? "Todas as Filiais" : this.branches.values[this.selectedBranchIndex];
+      const product = this.selectedProductIndex === 0 ? "Todos os Produtos" : this.products.values[this.selectedProductIndex];
+      return `Vendas - ${branch}, ${product}`;
+    },
     getSalesDataForChart() {
-      const month = this.selectedMonthIndex;
-      const branch = this.selectedBranchIndex;
+      const salesByMonth = new Array(this.months.values.length).fill(0);
 
-      if (month !== null) {
-        return [this.salesData.getSales(month, branch, 0)]; // Produto fixo como exemplo
+      for (let month = 0; month < this.months.values.length; month++) {
+        for (let branch = 0; branch < this.branches.values.length - 1; branch++) {
+          if (this.selectedBranchIndex !== 0 && branch + 1 !== this.selectedBranchIndex) continue;
+
+          for (let product = 0; product < this.products.values.length - 1; product++) {
+            if (this.selectedProductIndex !== 0 && product + 1 !== this.selectedProductIndex) continue;
+
+            salesByMonth[month] += this.salesData.getSales(month, branch, product);
+          }
+        }
       }
 
-      const allMonthsData = [];
-      for (let i = 0; i < this.months.values.length; i++) {
-        allMonthsData.push(this.salesData.getSales(i, branch, 0)); // Produto fixo
-      }
-
-      return allMonthsData;
+      return salesByMonth;
     },
   },
   watch: {
-    selectedMonthIndex: "updateChart",
+    selectedProductIndex: "updateChart",
     selectedBranchIndex: "updateChart",
   },
   mounted() {
-    this.updateChart();
+    this.updateChart(); // Inicializar com gráfico geral
   },
 };
 </script>
@@ -215,14 +227,15 @@ button {
   background-color: #45a049;
 }
 
-.btn-month-filter {
-  background-color: #2196F3;
+.btn-product-filter {
+  background-color: #ff9800;
   color: white;
 }
 
-.btn-month-filter:hover {
-  background-color: #0b7dda;
+.btn-product-filter:hover {
+  background-color: #e68a00;
 }
+
 
 .btn-branch-filter {
   background-color: #f44336;
@@ -266,5 +279,4 @@ h1 {
   height: 400px;
   margin-top: 20px;
 }
-
 </style>
