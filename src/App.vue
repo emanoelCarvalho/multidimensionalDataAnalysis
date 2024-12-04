@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- Sidebar -->
+   
     <aside class="sidebar">
       <nav>
         <div class="logo">
@@ -8,7 +8,7 @@
             alt="Logomarca O Boticário" />
         </div>
 
-        <!-- Botões com Opções -->
+       
         <div class="buttons">
           <div>
             <button class="btn-graph-type" @click="toggleOptions('graph')">Alterar Tipo de Gráfico</button>
@@ -43,7 +43,7 @@
       </nav>
     </aside>
 
-    <!-- Main Content -->
+    
     <main class="content">
       <h1>Análise de Vendas Supermercado</h1>
       <div class="chart-container">
@@ -61,26 +61,26 @@ import Chart from "chart.js/auto";
 export default {
   data() {
     return {
-      // Opções de filtro
+      
       showGraphOptions: false,
       showProductOptions: false,
       showBranchOptions: false,
-      selectedProductIndex: 0, // 0 para "Todos os Produtos"
-      selectedBranchIndex: 0, // 0 para "Todas as Filiais"
+      selectedProductIndex: 0,
+      selectedBranchIndex: 0, 
 
-      // Modelos
+      
       months: new Dimension("Meses", 12),
       branches: new Dimension("Filiais", 3),
       products: new Dimension("Produtos", 5),
-      salesData: new Sales(12, 3, 5), // Exemplo: 12 meses, 3 filiais, 5 produtos
+      salesData: new Sales(12, 3, 5), 
 
-      // Configuração do gráfico
+      
       chartType: "line",
       chart: null,
     };
   },
   created() {
-    // Inicializar os dados dos modelos
+   
     this.months.values = [
       "Janeiro",
       "Fevereiro",
@@ -98,7 +98,7 @@ export default {
     this.branches.values = ["Todas as Filiais", "Filial 1", "Filial 2", "Filial 3"];
     this.products.values = ["Todos os Produtos", "Produto A", "Produto B", "Produto C", "Produto D", "Produto E"];
 
-    // Simular vendas para teste
+ 
     for (let month = 0; month < 12; month++) {
       for (let branch = 0; branch < 3; branch++) {
         for (let product = 0; product < 5; product++) {
@@ -109,9 +109,8 @@ export default {
   },
   methods: {
     toggleOptions(type) {
-      this[`show${type.charAt(0).toUpperCase() + type.slice(1)}Options`] = !this[
-        `show${type.charAt(0).toUpperCase() + type.slice(1)}Options`
-      ];
+      this[`show${type.charAt(0).toUpperCase() + type.slice(1)}Options`] = !this[`
+        show${type.charAt(0).toUpperCase() + type.slice(1)}Options`];
     },
     changeGraphType(type) {
       this.chartType = type.toLowerCase();
@@ -125,6 +124,24 @@ export default {
         this.chart.destroy();
       }
 
+      
+      const colors = [
+        "rgba(255, 99, 132, 0.6)",  
+        "rgba(54, 162, 235, 0.6)",  
+        "rgba(255, 206, 86, 0.6)",  
+        "rgba(75, 192, 192, 0.6)",  
+        "rgba(153, 102, 255, 0.6)", 
+        "rgba(255, 159, 64, 0.6)",  
+        "rgba(201, 203, 207, 0.6)", 
+        "rgba(123, 239, 178, 0.6)", 
+        "rgba(255, 105, 180, 0.6)", 
+        "rgba(0, 128, 255, 0.6)",   
+        "rgba(255, 255, 0, 0.6)",   
+        "rgba(128, 0, 128, 0.6)",   
+      ];
+
+      const borderColors = colors.map((color) => color.replace("0.6", "1"));
+
       this.chart = new Chart(ctx, {
         type: this.chartType,
         data: {
@@ -133,11 +150,21 @@ export default {
             {
               label: this.getChartLabel(),
               data,
-              borderColor: "rgba(54, 162, 235, 1)",
-              backgroundColor: "rgba(54, 162, 235, 0.2)",
-              fill: true,
+              backgroundColor: this.chartType === "pie" ? colors : colors[0],
+              borderColor: this.chartType === "pie" ? borderColors : borderColors[0],
+              borderWidth: 1,
+              fill: this.chartType !== "pie",
             },
           ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: this.chartType === "pie",
+              position: "top",
+            },
+          },
         },
       });
     },
@@ -169,13 +196,13 @@ export default {
     selectedBranchIndex: "updateChart",
   },
   mounted() {
-    this.updateChart(); // Inicializar com gráfico geral
+    this.updateChart();
   },
 };
 </script>
 
 <style scoped>
-/* Estilo igual ao código fornecido acima */
+
 #app {
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(111, 149, 126, 1) 35%);
   width: 100%;
@@ -183,7 +210,7 @@ export default {
   position: fixed;
 }
 
-/* Sidebar styles */
+
 .sidebar {
   width: 250px;
   height: 100vh;
@@ -201,7 +228,7 @@ export default {
   width: 100%;
 }
 
-/* Button styles */
+
 .buttons {
   margin-top: 20px;
 }
@@ -217,7 +244,7 @@ button {
   transition: background-color 0.3s;
 }
 
-/* Estilos para os botões */
+
 .btn-graph-type {
   background-color: #4CAF50;
   color: white;
@@ -246,7 +273,7 @@ button {
   background-color: #da190b;
 }
 
-/* Estilos para as opções abaixo dos botões */
+
 .options {
   margin-top: 10px;
   padding: 10px;
@@ -262,7 +289,7 @@ button {
   margin: 5px 0;
 }
 
-/* Main content */
+
 .content {
   margin-left: 270px;
   padding: 20px;
@@ -273,7 +300,7 @@ h1 {
   color: #333;
 }
 
-/* Gráfico responsivo */
+
 .chart-container {
   width: 100%;
   height: 400px;
