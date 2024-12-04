@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-   
+
     <aside class="sidebar">
       <nav>
         <div class="logo">
@@ -8,7 +8,7 @@
             alt="Logomarca O Boticário" />
         </div>
 
-       
+
         <div class="buttons">
           <div>
             <button class="btn-graph-type" @click="toggleOptions('graph')">Alterar Tipo de Gráfico</button>
@@ -25,7 +25,7 @@
               <select v-model="selectedProductIndex">
                 <option disabled value="">Selecione um produto</option>
                 <option v-for="(product, index) in products.values" :key="index" :value="index">
-                  Produto {{ index + 1 }}
+                  {{ product }}
                 </option>
               </select>
             </div>
@@ -35,7 +35,10 @@
             <button class="btn-branch-filter" @click="toggleOptions('branch')">Filtrar Vendas por Filial</button>
             <div v-if="showBranchOptions" class="options">
               <select v-model="selectedBranchIndex">
-                <option v-for="(branch, index) in branches.values" :key="index" :value="index">{{ branch }}</option>
+                <option disabled value="">Selecione uma filial</option>
+                <option v-for="(branch, index) in branches.values" :key="index" :value="index">
+                  {{ branch }}
+                </option>
               </select>
             </div>
           </div>
@@ -43,9 +46,9 @@
       </nav>
     </aside>
 
-    
+
     <main class="content">
-      <h1>Análise de Vendas Supermercado</h1>
+      <h1>Análise de Vendas para Perfumarias</h1>
       <div class="chart-container">
         <canvas id="salesChart"></canvas>
       </div>
@@ -61,26 +64,26 @@ import Chart from "chart.js/auto";
 export default {
   data() {
     return {
-      
+
       showGraphOptions: false,
       showProductOptions: false,
       showBranchOptions: false,
       selectedProductIndex: 0,
-      selectedBranchIndex: 0, 
+      selectedBranchIndex: 0,
 
-      
+
       months: new Dimension("Meses", 12),
       branches: new Dimension("Filiais", 3),
       products: new Dimension("Produtos", 5),
-      salesData: new Sales(12, 3, 5), 
+      salesData: new Sales(12, 3, 5),
 
-      
+
       chartType: "line",
       chart: null,
     };
   },
   created() {
-   
+
     this.months.values = [
       "Janeiro",
       "Fevereiro",
@@ -95,10 +98,10 @@ export default {
       "Novembro",
       "Dezembro",
     ];
-    this.branches.values = ["Todas as Filiais", "Filial 1", "Filial 2", "Filial 3"];
-    this.products.values = ["Todos os Produtos", "Produto A", "Produto B", "Produto C", "Produto D", "Produto E"];
+    this.branches.values = ["Todas as Filiais", "Filial SP", "Filial RJ", "Filial PR"];
+    this.products.values = ["Todos os Produtos", "D.C Floratta Cerejeira", "Perfume Paradise Floral", "D.C Boticollection Horizonte", "D.C Floratta Red", "D.C Malbec"];
 
- 
+
     for (let month = 0; month < 12; month++) {
       for (let branch = 0; branch < 3; branch++) {
         for (let product = 0; product < 5; product++) {
@@ -109,8 +112,9 @@ export default {
   },
   methods: {
     toggleOptions(type) {
-      this[`show${type.charAt(0).toUpperCase() + type.slice(1)}Options`] = !this[`
-        show${type.charAt(0).toUpperCase() + type.slice(1)}Options`];
+      this[`show${type.charAt(0).toUpperCase() + type.slice(1)}Options`] = !this[
+        `show${type.charAt(0).toUpperCase() + type.slice(1)}Options`
+      ];
     },
     changeGraphType(type) {
       this.chartType = type.toLowerCase();
@@ -124,20 +128,20 @@ export default {
         this.chart.destroy();
       }
 
-      
+
       const colors = [
-        "rgba(255, 99, 132, 0.6)",  
-        "rgba(54, 162, 235, 0.6)",  
-        "rgba(255, 206, 86, 0.6)",  
-        "rgba(75, 192, 192, 0.6)",  
-        "rgba(153, 102, 255, 0.6)", 
-        "rgba(255, 159, 64, 0.6)",  
-        "rgba(201, 203, 207, 0.6)", 
-        "rgba(123, 239, 178, 0.6)", 
-        "rgba(255, 105, 180, 0.6)", 
-        "rgba(0, 128, 255, 0.6)",   
-        "rgba(255, 255, 0, 0.6)",   
-        "rgba(128, 0, 128, 0.6)",   
+        "rgba(255, 99, 132, 0.6)",
+        "rgba(54, 162, 235, 0.6)",
+        "rgba(255, 206, 86, 0.6)",
+        "rgba(75, 192, 192, 0.6)",
+        "rgba(153, 102, 255, 0.6)",
+        "rgba(255, 159, 64, 0.6)",
+        "rgba(201, 203, 207, 0.6)",
+        "rgba(123, 239, 178, 0.6)",
+        "rgba(255, 105, 180, 0.6)",
+        "rgba(0, 128, 255, 0.6)",
+        "rgba(255, 255, 0, 0.6)",
+        "rgba(128, 0, 128, 0.6)",
       ];
 
       const borderColors = colors.map((color) => color.replace("0.6", "1"));
@@ -202,14 +206,12 @@ export default {
 </script>
 
 <style scoped>
-
 #app {
   background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(111, 149, 126, 1) 35%);
   width: 100%;
   height: 100vh;
   position: fixed;
 }
-
 
 .sidebar {
   width: 250px;
@@ -228,7 +230,6 @@ export default {
   width: 100%;
 }
 
-
 .buttons {
   margin-top: 20px;
 }
@@ -243,7 +244,6 @@ button {
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-
 
 .btn-graph-type {
   background-color: #4CAF50;
@@ -263,7 +263,6 @@ button {
   background-color: #e68a00;
 }
 
-
 .btn-branch-filter {
   background-color: #f44336;
   color: white;
@@ -273,7 +272,6 @@ button {
   background-color: #da190b;
 }
 
-
 .options {
   margin-top: 10px;
   padding: 10px;
@@ -281,29 +279,39 @@ button {
   border-radius: 5px;
 }
 
-.options button,
-.options input,
-.options select {
+.options button, .options input, .options select {
   width: 100%;
   padding: 10px;
   margin: 5px 0;
 }
 
-
 .content {
-  margin-left: 270px;
+  margin-left: 270px; 
   padding: 20px;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  height: 100vh; 
+  box-sizing: border-box; 
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 36px; 
   color: #333;
+  margin-bottom: 30px; 
+  text-align: center; 
 }
-
 
 .chart-container {
-  width: 100%;
-  height: 400px;
-  margin-top: 20px;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  width: 90%; 
+  max-width: 800px; 
+  height: 500px; 
+  margin: 0 auto; 
 }
+
+
 </style>
