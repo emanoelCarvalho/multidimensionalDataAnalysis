@@ -1,4 +1,3 @@
-//model dimenções
 class Dimension {
   name: string;
   values: string[];
