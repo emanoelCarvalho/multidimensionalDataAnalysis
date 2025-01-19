@@ -1,6 +1,6 @@
 //model vendas
 
-import { IOperation } from "./IOperation";
+import { IOperation } from "./ioperation";
 
 class Sales implements IOperation  {
   salesForDimension: number[][][];
