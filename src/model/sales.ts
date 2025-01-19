@@ -1,8 +1,6 @@
-//model vendas
-
 import { IOperation } from "./ioperation";
 
-class Sales implements IOperation  {
+class Sales implements IOperation {
   salesForDimension: number[][][];
 
   constructor(dimensions: number, branchs: number, products: number) {
